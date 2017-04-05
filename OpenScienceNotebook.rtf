@@ -26,6 +26,22 @@ Machine type:
 	Total of documents: ~10M\
 	Exact info:  results/databaseinfo\
 \
+Configuration 2:\
+\
+- Database B1: MongoDB 3.4\
+	Number of databases: 1 \
+	Number of random documents: 300\
+	Number of tenants: 100\
+	Total of documents: 100*300\
+\
+- Database B2: MongoDB 3.4\
+	Number of databases: 2 \
+	Number of random documents: 300\
+	Number of tenants: 50\
+	Total of documents: 50*300\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\
+Test 1-8\
 You can see the code of the micro service here: {\field{\*\fldinst{HYPERLINK "https://srv-lab-t-401.zhaw.ch/arkis/formula/tree/master"}}{\fldrslt https://srv-lab-t-401.zhaw.ch/arkis/formula/tree/master}}\
 - Test Microservice: It is use for insert data and for call the documents micro service in the test. Image:  
 \f1 \expnd0\expndtw0\kerning0
@@ -36,7 +52,21 @@ chumbo/arkistest:1.2.3
 chumbo/arkiscrud:1.6.1\
 					Logic of the app\
 					REST API for documents\
-- MongoDB stateful.					
+- MongoDB stateful.\
+\
+
+\f0\fs24 \kerning1\expnd0\expndtw0 Test 8-24\
+You can see the code of the micro service here: {\field{\*\fldinst{HYPERLINK "https://srv-lab-t-401.zhaw.ch/arkis/formula/tree/master"}}{\fldrslt https://srv-lab-t-401.zhaw.ch/arkis/formula/tree/master}}\
+- Test Microservice: It is use for insert data and for call the documents micro service in the test. Image:  
+\f1 \expnd0\expndtw0\kerning0
+chumbo/arkistest:1.2.3
+\f0 \kerning1\expnd0\expndtw0 \
+- Document Microservice:  Image: 
+\f2\fs28 \expnd0\expndtw0\kerning0
+chumbo/arkiscrud:1.6.1\
+					Logic of the app\
+					REST API for documents\
+- MongoDB Deployment.						
 \f0\fs24 \kerning1\expnd0\expndtw0 \
 \
 \pard\pardeftab720\sl280\partightenfactor0
@@ -60,6 +90,19 @@ Description:\
 		- return last document: documents/' + str(i) + '/D/' + replica + '/last'		- return the document with the id 4: documents/' + str(i) + '/D/' + replica + '/4\
 	Each call is to the API REST documents.\
 	The test return the time for each tenant and the total time.\
+\
+Test 2: Select test without concurrency\
+Endpoint: /test/selects/<tenant_start>/<tenant_end>/<option>/<replica>/<loop>/<lim>/<word> \
+		example: 104.154.53.217:30002/test/selects/0/100/D/1/2/100/lorem\
+Description:\
+	Between the tenant start and tenant end, the test repeat \'93loop\'94 times four calls.\
+		- search using word. documents/search/' + str(i) + '/D/' + replica + '/' + str(word)\
+		- return a number of document: documents/' + str(i) + '/D/' + replica + '/lim/' + str(lim)\
+		- return last document: documents/' + str(i) + '/D/' + replica + '/last'		- return the document with the id 4: documents/' + str(i) + '/D/' + replica + '/4\
+	Each call is to the API REST documents.\
+	The test return the time for each tenant and the total time.\
+\
+Test 3: Select test with concurrency\
 \
 \
 The experiments are described uniformly with the following metadata for easier\
@@ -217,6 +260,25 @@ Time_start:\
 Time_end:\
 Description:\
 	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem\
+	With 7 replica document.\
+	With 1 replica of mongo.\
+	We run 3 different times.\
+Previous steps:\
+	Insert the data.\
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem\
+Result: {\field{\*\fldinst{HYPERLINK "https://srv-lab-t-401.zhaw.ch/arkis/experimentFormulaElasticity/tree/master/results"}}{\fldrslt https://srv-lab-t-401.zhaw.ch/arkis/experimentFormulaElasticity/blob/master/results/test_3_db_7_documents.rtf}}\
+Conclusions:\
+State:  Success\
+\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\
+Id: 9\
+Title: Select test with 1 db and 7 documentMS replicas\
+Date: 04/04/2016\
+Time_start:\
+Time_end:\
+Description:\
+	Using configuration 2, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem\
 	With 7 replica document.\
 	With 1 replica of mongo.\
 	We run 3 different times.\
