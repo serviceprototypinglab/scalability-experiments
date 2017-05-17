@@ -12,3 +12,24 @@ There are 3 subfolders:
 
 We expect that with future containerised database management systems
 (e.g. Crate) this limitation will disappear.
+
+Replicas are specified as follows:
+ - in OpenShift/Kubernetes via command line:
+    oc scale --replicas=3 rc <deployment>
+    oc autoscale dc/<deployment> --min 1 --max 10
+ - in OpenShift/Kubernetes via deployment descriptor:
+    spec:
+      scaleRef:
+        ..
+      minReplicas: 1
+      maxReplicas: 10
+      ...
+ - in Docker-Compose via compose file:
+    services:
+      <servicename>
+        deploy:
+          mode: replicated
+          replicas: 3
+
+In the experiments, only Kubernetes deployments were tested on the
+Google Cloud Platform.
