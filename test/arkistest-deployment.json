@@ -1,0 +1,48 @@
+{
+  "kind": "Deployment",
+  "apiVersion": "extensions/v1beta1",
+  "metadata": {
+    "name": "arkis-test",
+    "namespace": "default",
+    "creationTimestamp": null
+  },
+  "spec": {
+    "replicas": 1,
+    "template": {
+      "metadata": {
+        "creationTimestamp": null,
+        "labels": {
+          "service": "arkis-test"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "arkis-test",
+            "image": "chumbo/arkistest:1.1",
+            "ports": [
+              {
+                "containerPort": 55555,
+                "protocol": "TCP"
+              }
+            ],
+            "env": [
+              {
+                "name": "DATABASE_HOST",
+                "value": "mongo"
+              },
+              {
+                "name": "DATABASE_PORT",
+                "value": "27017"
+              }
+            ],
+            "resources": {}
+          }
+        ],
+        "restartPolicy": "Always"
+      }
+    },
+    "strategy": {}
+  },
+  "status": {}
+}

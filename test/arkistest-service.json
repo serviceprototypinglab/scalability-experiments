@@ -1,0 +1,27 @@
+{
+  "kind": "Service",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "arkis-test",
+    "namespace": "default",
+    "creationTimestamp": null,
+    "labels": {
+      "service": "arkis-test"
+    }
+  },
+  "spec": {
+    "ports": [
+      {
+        "name": "55555",
+        "protocol": "TCP",
+        "port": 55555,
+        "targetPort": 55555,
+        "nodePort": 30002
+      }
+    ],
+    "selector": {
+      "service": "arkis-test"
+    },
+    "type": "NodePort"
+  }
+}
