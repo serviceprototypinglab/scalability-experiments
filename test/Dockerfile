@@ -1,0 +1,7 @@
+FROM python:2-onbuild
+#ENV CYCLOPS_ENDPOINT=localhost:port/data
+ENV DATABASE_HOST=mongo
+ENV DATABASE_PORT=27017
+ENV DOCUMENTS_HOST='35.184.62.148'
+EXPOSE 55555
+ENTRYPOINT ["python","/usr/src/app/insert.py"]
