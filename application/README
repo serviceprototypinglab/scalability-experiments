@@ -1,0 +1,14 @@
+This folder contains example Kubernetes deployment descriptors for an
+application consisting of 1 stateful and 1 stateless service.
+ - stateful: database, implemented with MongoDB Docker container
+ - stateless: application, implemented as another Docker container
+
+There are 3 subfolders:
+ - original: unscaled instance configuration
+ - optimal: optimal configuration for the benchmark workload determined
+   by the tool to determine elasticity boundaries
+ - practical: deviated optimal solution to account for the limitation in
+   automatic scaling of MongoDB containers
+
+We expect that with future containerised database management systems
+(e.g. Crate) this limitation will disappear.
