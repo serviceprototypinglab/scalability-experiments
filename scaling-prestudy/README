@@ -1,0 +1,27 @@
+This directory contains a script to simulate or emulate the scheduling
+and scaling behaviour of container management platforms. It assumes the
+presence of the sources of the editor vim which will be configured and
+built with different parameters and increasing parallelism.
+
+To prepare, run the following commands:
+
+$ mkdir -p test
+$ cd test
+$ apt-get source vim
+
+This should download vim-8.0.0197 or a similar version. Create a copy
+of this folder to run the job tests manually.
+
+$ cp -r vim-8.0.0197 vim-8.0.0197.copy
+$ cd vim-8.0.0197.copy
+$ time ./configure # ca. 8 sec.
+$ time make # ca. 59 sec. for 1st time, 30 sec. for make -j5
+
+Run the benchmark as follows after verifying that the configuration
+constants are all set up appropriately:
+
+$ python3 autoscale.py
+
+A Docker image is partly prepared to try the same experiment without
+emulation in a real Docker-Compose or Kubernetes environment. Progress
+is limited due to the unhandiness of these tools.
