@@ -1,0 +1,479 @@
+
+————————————————————————————————————
+
+- Cluster 1: Cluster with the implementation. Kubernetes 1.5.3. 6 Nodes
+- Cluster 2: Cluster for run the test micro service. Kubernetes 1.5.3. 3 Nodes
+
+Node: Machine type: n1-standard-1 (1 vCPU, 3.75 GB memory)
+
+Configuration 1:
+
+- Database A: MongoDB 3.4
+	Number of databases: 1000 (1 database per tenant)
+	Number of random documents: ~10000
+	Total of documents: ~10M
+	Exact info:  ./results/databaseinfo
+
+Configuration 2:
+
+- Database B1: MongoDB 3.4
+	Number of databases: 1
+	Number of random documents: 300
+	Number of tenants: 100
+	Total of documents: 100*300
+
+- Database B2: MongoDB 3.4
+	Number of databases: 2
+	Number of random documents: 300
+	Number of tenants: 50
+	Total of documents: 50*300
+
+———————————————————————————————————
+
+Test 1-8
+You can see the code of the micro service here: scaling-containers
+- Test Microservice: It is use for insert data and for call the documents micro service in the test. Image:  chumbo/arkistest:1.2.3
+- Document Microservice:  Image: chumbo/arkiscrud:1.6.1
+					Logic of the app
+					REST API for documents
+- MongoDB stateful.
+
+Test 9-20
+You can see the code of the micro service here: scaling-containers
+- Test Microservice: It is use for insert data and for call the documents micro service in the test. Image:  chumbo/arkistest:1.2.3
+- Document Microservice:  Image: chumbo/arkiscrud:1.6.1
+					Logic of the app
+					REST API for documents
+- MongoDB Deployment.
+
+————————————————————————————————————
+
+Types of test:
+
+Test 1: Select test without threads.
+Endpoint: /test/selects/<tenant_start>/<tenant_end>/<option>/<replica>/<loop>/<lim>/<word>
+		example: 104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+Description:
+	Between the tenant start and tenant end, the test repeat “loop” times four calls.
+		- search using word. documents/search/' + str(i) + '/D/' + replica + '/' + str(word)
+		- return a number of document: documents/' + str(i) + '/D/' + replica + '/lim/' + str(lim)
+		- return last document: documents/' + str(i) + '/D/' + replica + '/last'
+		- return the document with the id 4: documents/' + str(i) + '/D/' + replica + '/4
+	Each call is to the API REST documents.
+	The test return the time for each tenant and the total time.
+
+Test 2: Select test with concurrency
+Endpoint: /test/selects/<tenant_start>/<tenant_end>/<option>/<replica>/<loop>/<lim>/<word>
+		example: 104.154.53.217:30002/test/selects/0/100/D/1/2/100/lorem
+OR:
+	-/test/selects/<tenant_start>/<tenant_end>/<option>/<replica>/<loop>/<lim>/<word>
+		example: 104.154.53.217:30002/test/selects/0/24/D/1/2/100/lorem
+	-/test/selects/<tenant_start>/<tenant_end>/<option>/<replica>/<loop>/<lim>/<word>
+		example: 104.154.53.217:30002/test/selects/25/50/D/1/2/100/lorem
+	-/test/selects/<tenant_start>/<tenant_end>/<option>/<replica>/<loop>/<lim>/<word>
+		example: 104.154.53.217:30002/test/selects/50/74/D/1/2/100/lorem
+	-/test/selects/<tenant_start>/<tenant_end>/<option>/<replica>/<loop>/<lim>/<word>
+		example: 104.154.53.217:30002/test/selects/75/100/D/1/2/100/lorem
+Description:
+	Between the tenant start and tenant end, the test repeat “loop” times four calls.
+		- search using word. documents/search/' + str(i) + '/D/' + replica + '/' + str(word)
+		- return a number of document: documents/' + str(i) + '/D/' + replica + '/lim/' + str(lim)
+		- return last document: documents/' + str(i) + '/D/' + replica + '/last'
+		- return the document with the id 4: documents/' + str(i) + '/D/' + replica + '/4
+	Each call is to the API REST documents.
+	The test return the time for each tenant and the total time.
+
+
+The experiments are described uniformly with the following metadata for easier
+reproducibility:
+
+Id:
+Title:
+Date:
+Time_start:
+Time_end:
+Description:
+Previous steps:
+Instructions:
+Result:
+Conclusions:
+State:
+
+————————————————————————————————————
+
+Id: 1
+Title: Select test with 1 db and 1 documentMS replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+	With 1 replica document.
+	With 1 replica of mongo.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+Result: ./results/test_1_db_1_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+
+Id: 2
+Title: Select test with 1 db and 3 documentMS replicas  and 3 test micro service replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+	With 3 replica document.
+	With 1 replica of mongo.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+Result: ./results/test_1_db_3_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 3
+Title: Select test with 1 db and 5 documentMS replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+	With 5 replica document.
+	With 1 replica of mongo.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+Result: ./results/test_1_db_5_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 4
+Title: Select test with 1 db and 7 documentMS replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+	With 7 replica document.
+	With 1 replica of mongo.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/1/2/1000/lorem
+Result: ./results/test_1_db_7_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 5
+Title: Select test with 3 db and 1 documentMS replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+	With 1 replica document.
+	With 3 replica of mongo.
+	We run 3 different times.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+Result: ./results/test_3_db_1_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+
+Id: 6
+Title: Select test with 3 db and 3 documentMS replicas  and 3 test micro service replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+	With 3 replica document.
+	With 3 replica of mongo.
+	We run 3 different times.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+Result: ./results/test_3_db_3_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 7
+Title: Select test with 3 db and 5 documentMS replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+	With 5 replica document.
+	With 3 replica of mongo.
+	We run 3 different times.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+Result: ./results/test_3_db_5_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 8
+Title: Select test with 3 db and 7 documentMS replicas
+Date: 21/03/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 1, we run the Test 1.  104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+	With 7 replica document.
+	With 1 replica of mongo.
+	We run 3 different times.
+Previous steps:
+	Insert the data.
+Instructions: GET 104.154.53.217:30002/test/selects/0/1000/D/3/2/1000/lorem
+Result: ./results/test_3_db_7_documents
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 9
+Title: Select test with 1 db and 1 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 1 replica document.
+	All the tenants in 1 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_1_documents_1
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 10
+Title: Select test with 1 db and 3 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 3 replica document.
+	All the tenants in 1 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_1_documents_3
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 11
+Title: Select test with 1 db and 5 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 5 replica document.
+	All the tenants in 1 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_1_documents_5
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 12
+Title: Select test with 1 db and 7 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 7 replica document.
+	All the tenants in 1 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_1_documents_7
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 13
+Title: Select test with 1 db and 9 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 9 replica document.
+	All the tenants in 1 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_1_documents_9
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 14
+Title: Select test with 1 db and 11 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 11 replica document.
+	All the tenants in 1 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_1_documents_11
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 15
+Title: Select test with 2 db and 1 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 1 replica document.
+	All the tenants in 2 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_2_documents_1
+Conclusions:
+State:  Success
+
+
+————————————————————————————————————
+
+Id: 16
+Title: Select test with 2 db and 3 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 3 replica document.
+	All the tenants in 2 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_2_documents_3
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 17
+Title: Select test with 2 db and 5 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 5 replica document.
+	All the tenants in 2 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_2_documents_5
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+Id: 18
+Title: Select test with 2 db and 7 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 7 replica document.
+	All the tenants in 2 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_2_documents_7
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+Id: 19
+Title: Select test with 2 db and 9 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 9 replica document.
+	All the tenants in 2 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_2_documents_9
+Conclusions:
+State:  Success
+
+————————————————————————————————————
+
+Id: 20
+Title: Select test with 2 db and 11 documentMS replicas
+Date: 04/04/2016
+Time_start:
+Time_end:
+Description:
+	Using configuration 2, we run the Test 2.
+	With 11 replica document.
+	All the tenants in 2 replica of mongo.
+	We run 20 different times.
+Previous steps:
+	Insert the data.
+Instructions: Test 2.
+Result: ./results/fourCall/database_2_documents_11
+Conclusions:
+State:  Success
+
+————————————————————————————————————
