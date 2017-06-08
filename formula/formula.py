@@ -1,6 +1,7 @@
 from numpy import array, ndenumerate
 import operator
 
+
 # 2 D
 
 
@@ -83,13 +84,14 @@ def formula(p_matrix, prices, max_p, max_cost, rate, policy):
     else:
         return rate_fastest(p_matrix, prices, max_p, max_cost, rate)
 
+
 # MD
 
 
 def get_cost_md(index_matrix, p):
     cost = 0
     for i in range(0, len(index_matrix)):
-        cost += ((index_matrix[i] + 1)*p[i])
+        cost += ((index_matrix[i] + 1) * p[i])
     return cost
 
 
@@ -97,15 +99,15 @@ def fastest_md(p_matrix, prices, max_p, max_cost):
     res = (-1)
     aux_min = -1
     for index_matrix, value in ndenumerate(p_matrix):
-        if (p_matrix[index_matrix] <= aux_min or aux_min == -1)\
-                and p_matrix[index_matrix] <= max_p\
+        if (p_matrix[index_matrix] <= aux_min or aux_min == -1) \
+                and p_matrix[index_matrix] <= max_p \
                 and get_cost_md(index_matrix, prices) <= max_cost:
             aux_min = p_matrix[index_matrix]
             res = index_matrix
     if p_matrix[res] <= max_p \
             and get_cost_md(res, prices) <= max_cost:
         return res
-    return res
+    return res[0]
 
 
 def cheapest_md(p_matrix, prices, max_p, max_cost):
@@ -128,11 +130,11 @@ def rate_cheapest_md(p_matrix, prices, max_p, max_cost, rate):
     cheapest1 = cheapest_md(p_matrix, prices, max_p, max_cost)
     value_cheapest1 = p_matrix[cheapest1]
     for index, value in ndenumerate(p_matrix):
-            d = get_cost_md(index, prices) / value_cheapest1
-            if d <= rate:
-                if p_matrix[index] < max_p:
-                    a2 = (get_cost_md(index, prices), value, index)
-                    res.append(a2)
+        d = get_cost_md(index, prices) / value_cheapest1
+        if d <= rate:
+            if p_matrix[index] < max_p:
+                a2 = (get_cost_md(index, prices), value, index)
+                res.append(a2)
     res = sorted(res, key=lambda a1: a1[1])
     return res
 
@@ -142,14 +144,13 @@ def rate_fastest_md(p_matrix, prices, max_p, max_cost, rate):
     fastest1 = fastest_md(p_matrix, prices, max_p, max_cost)
     value_fastest = p_matrix[fastest1]
     for index, value in ndenumerate(p_matrix):
-            d = p_matrix[index] / value_fastest
-            if d <= rate:
-                if get_cost_md(index, prices) < max_cost:
-                    a2 = (get_cost_md(index, prices), value, index)
-                    print a2
-                    res.append(a2)
+        d = p_matrix[index] / value_fastest
+        if d <= rate:
+            if get_cost_md(index, prices) < max_cost:
+                a2 = (get_cost_md(index, prices), value, index)
+                res.append(a2)
     res = sorted(res, key=lambda a1: a1[0])
-    return res
+    return res[0]
 
 
 def formula_md(p_matrix, prices, max_p, max_cost, rate, policy):
@@ -267,15 +268,14 @@ def print_example():
         ]
     ])
     prices1 = [1.1, 0.9, 1.0]
-    print cheapest_md(matrix_2, prices1, 80, 8)
-    print fastest_md(matrix_2, prices1, 80, 8)
-    for a in rate_fastest_md(matrix_2, prices1, 80, 7, 1.2):
+    print cheapest_md(matrix_1, prices1, 80, 8)
+    print fastest_md(matrix_1, prices1, 80, 8)
+    for a in rate_fastest_md(matrix_1, prices1, 80, 7, 1.2):
         print a
-    for a in rate_cheapest_md(matrix_2, prices1, 43, 8, 1.2):
+    for a in rate_cheapest_md(matrix_1, prices1, 43, 8, 1.2):
         print a
 
 
-# TODO No tested
 # ME
 def solution_matrix(p_matrix, prices, max_p, max_cost):
     array_solutions = []
@@ -304,3 +304,49 @@ def me_cheapest_md(array_matrix, array_prices, array_performance, array_cost):
 
     return solutions_index[index], value
 
+
+def index_to_number_replicas(t):
+    stateless = t[2][1]*2 + 1
+    statefull = t[2][0] + 1
+    lst = list(t)
+    lst[2] = (stateless, statefull)
+    t = tuple(lst)
+    return t
+
+
+def demo():
+    price_stateless = 0.25
+    price_stateful = 1.0 / 12
+    prices = [price_stateless, price_stateful]
+    max_performance = 45.0
+    max_c = 0.8
+    rate1 = 1.06
+    # rate2 = 1.2
+    matrix_1 = array([
+        [
+            89.16724374,
+            45.5318765193,
+            43.7904612511,
+            41.8832055032,
+            42.0507290155,
+            40.4489257663
+        ],
+        [
+            71.6993230659,
+            48.1122723985,
+            40.0736481696,
+            35.9154654562,
+            36.0452770233,
+            36.3544942796
+        ]
+    ])
+
+    a = rate_fastest_md(matrix_1, prices, max_performance, max_c, rate1)
+    res = index_to_number_replicas(a)
+    print "cost               |  makespan         | (stateless, stateful)"
+    print res
+
+
+print "------------"
+demo()
+print "------------"
